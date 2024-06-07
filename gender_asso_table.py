@@ -62,4 +62,4 @@ df = pd.DataFrame(data)
 
 # Writing DataFrame to CSV
 csv_file_path = 'gender_association.csv'
-df.to_csv(csv_file_path, index=False)
+df.to_csv(path.join("charts_and_tables", csv_file_path), index=False)
