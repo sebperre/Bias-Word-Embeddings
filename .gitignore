@@ -1,1 +1,3 @@
 embeddings
+.env
+llm_10000_embeddings
