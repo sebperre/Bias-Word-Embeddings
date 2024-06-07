@@ -1,5 +1,8 @@
-import cohere  
-co = cohere.Client(api_key="InHwytsfm89CUjCQHybUCn3uIvEwAgvpdMqFkIOI")  
+import cohere
+import os
+
+COHERE_API_KEY = os.environ.get("COHERE_API_KEY")
+co = cohere.Client(api_key=COHERE_API_KEY)  
 texts = [  
    'Hello from Cohere!', 'مرحبًا من كوهير!', 'Hallo von Cohere!',  
    'Bonjour de Cohere!', '¡Hola desde Cohere!', 'Olá do Cohere!',  
