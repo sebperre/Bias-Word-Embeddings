@@ -1,9 +1,8 @@
 from openai import OpenAI
 import os
 
-#OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY", "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")
-#openai_client = OpenAI(api_key=OPENAI_API_KEY)
-openai_client = OpenAI(api_key="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")
+OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
+openai_client = OpenAI(api_key=OPENAI_API_KEY)
 
 def openai_embed(query: str, model="text-embedding-3-large"):
    query = query.replace("\n", " ")
