@@ -11,16 +11,19 @@ import seaborn as sns
 import struct
 from io import BytesIO
 
-
-def bge_m3_embed(query: str):
-    # Can add "use_fp16=True" to speed up predictions
-    model = BGEM3FlagModel('BAAI/bge-m3', use_fp16=False)
-    embeddings = model.encode([query])['dense_vecs'][0]
-    return embeddings
-
-# Example usage (1024 dimensions)
-embeddings = bge_m3_embed("This is a text I want to embed")
-print(embeddings)
-
 def get_embeddings(num_embeddings):
-    pd.read_csv(path.join("embeddings", "glove.850B.300d.txt"))
+    words_df = pd.read_csv(path.join("embeddings", f'glove.840B.300d.txt'), sep=' ', nrows=num_embeddings, header=None,index_col=0, na_values=None, keep_default_na=False, quoting=csv.QUOTE_NONE)
+    list_of_words = list(words_df.index)
+    model = BGEM3FlagModel('BAAI/bge-m3', use_fp16=False)
+
+    embeddings_list = []
+
+    for word in list_of_words:
+        embeddings_list.append(model.encode([word])['dense_vecs'][0].tolist())
+
+    df = pd.DataFrame(embeddings_list)
+    df.index = list_of_words
+
+    df.to_csv(path.join("llm_10000_embeddings", f"bge_{num_embeddings}_embeddings.csv"), sep=" ", header=False, index=True)
+
+get_embeddings(100000)
