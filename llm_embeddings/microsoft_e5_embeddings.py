@@ -31,4 +31,4 @@ def get_embeddings(num_embeddings, model="base"):
 
     df.to_csv(path.join("llm_10000_embeddings", f"e5_{num_embeddings}_embeddings.csv"), sep=" ", header=False, index=True)
 
-get_embeddings(1000)
+get_embeddings(100000)

@@ -13,7 +13,7 @@ from io import BytesIO
 num_rows = 10000
 
 def table_association(file, csv_file_name, pos_class_name="female", neg_class_name="male"):
-    es_df = pd.read_csv(path.join("gender_association_collector_llm", file), na_values=None, keep_default_na=False)
+    es_df = pd.read_csv(path.join("llm_gender_association_collector", file), na_values=None, keep_default_na=False)
 
     n_list = [100, 1000, 10000]
     es_list = [0, 0.2, 0.5, 0.8]

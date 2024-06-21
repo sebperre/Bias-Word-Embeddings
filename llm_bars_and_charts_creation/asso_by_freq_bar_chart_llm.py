@@ -23,7 +23,7 @@ def calc_es_percentage(count_list, ceiling, df):
 
 
 def association_bar_chart_indiv(file, llm, axis="Gender", pos_class="Female", neg_class="Male", stimuli_pos=['female','woman','girl','sister','she','her','hers','daughter'], stimuli_neg=['male','man','boy','brother','he','him','his','son']):
-    file_df = pd.read_csv(path.join("gender_association_collector_llm", file), na_values=None, keep_default_na=False)
+    file_df = pd.read_csv(path.join("llm_gender_association_collector", file), na_values=None, keep_default_na=False)
 
     frequency_ceilings = [100, 1000, 10000]
 
@@ -71,10 +71,10 @@ def association_bar_chart_indiv(file, llm, axis="Gender", pos_class="Female", ne
     plt.show()
 
 def all_association_bar_chart(axis="Gender", pos_class="Female", neg_class="Male", stimuli_pos=['female','woman','girl','sister','she','her','hers','daughter'], stimuli_neg=['male','man','boy','brother','he','him','his','son']):
-    bge_10k_df = pd.read_csv(path.join("gender_association_collector_llm", "BGE_10k.csv"), na_values=None, keep_default_na=False)
-    cohere_10k_df = pd.read_csv(path.join("gender_association_collector_llm", "cohere_10k.csv"), na_values=None, keep_default_na=False)
-    openai_10k_df = pd.read_csv(path.join("gender_association_collector_llm", "e5_10k.csv"), na_values=None, keep_default_na=False)
-    e5_10k_df = pd.read_csv(path.join("gender_association_collector_llm", "openai_10k.csv"), na_values=None, keep_default_na=False)
+    bge_10k_df = pd.read_csv(path.join("llm_gender_association_collector", "BGE_10k.csv"), na_values=None, keep_default_na=False)
+    cohere_10k_df = pd.read_csv(path.join("llm_gender_association_collector", "cohere_10k.csv"), na_values=None, keep_default_na=False)
+    openai_10k_df = pd.read_csv(path.join("llm_gender_association_collector", "e5_10k.csv"), na_values=None, keep_default_na=False)
+    e5_10k_df = pd.read_csv(path.join("llm_gender_association_collector", "openai_10k.csv"), na_values=None, keep_default_na=False)
 
     frequency_ceilings = [100, 1000, 10000]
 

@@ -19,7 +19,7 @@ def get_embeddings(num_embeddings):
    words_df = pd.read_csv(path.join("embeddings", f'glove.840B.300d.txt'), sep=' ', nrows=num_embeddings, header=None,index_col=0, na_values=None, keep_default_na=False, quoting=csv.QUOTE_NONE)
    list_of_words = list(words_df.index)
 
-   chunk_size = 5000
+   chunk_size = 1000
 
    num_chunks = len(list_of_words) // chunk_size
 
@@ -30,16 +30,18 @@ def get_embeddings(num_embeddings):
       embeddings = response.embeddings.float # All text embeddings 
       for embedding in embeddings:
          embeddings_list.append(embedding)
+      print(f"Chunk {i} Completed out of {num_chunks}")
 
    if len(list_of_words) % chunk_size != 0:
       response = co.embed(texts=list_of_words[chunk_size*num_chunks:],input_type='classification', embedding_types=['float'], model='embed-multilingual-v3.0')  
       embeddings = response.embeddings.float # All text embeddings
       for embedding in embeddings:
          embeddings_list.append(embedding)
+      print("Last Chunk Completed")
 
    df = pd.DataFrame(embeddings_list)
    df.index = list_of_words
 
    df.to_csv(path.join("llm_10000_embeddings", f"cohere_{num_embeddings}_embeddings.csv"), sep=" ", header=False, index=True)
 
-get_embeddings(10000)
+get_embeddings(100000)

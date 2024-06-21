@@ -62,7 +62,7 @@ print('BGE VAD')
 targets = embedding_targets[0:STEP]
 bias_array = np.array([SC_WEAT(embedding_df.loc[word].to_numpy(),female_embeddings,male_embeddings,PERMUTATIONS) for word in targets])
 bias_df = pd.DataFrame(bias_array,index=targets,columns=['female_effect_size','female_p_value'])
-bias_df.to_csv(path.join("gender_association_collector_llm", f'BGE_10k.csv'))
+bias_df.to_csv(path.join("llm_gender_association_collector", f'BGE_10k.csv'))
 
 print('BGE 10k')
 
@@ -87,7 +87,7 @@ print('Cohere VAD')
 targets = embedding_targets[0:STEP]
 bias_array = np.array([SC_WEAT(embedding_ft.loc[word].to_numpy(),female_embeddings,male_embeddings,PERMUTATIONS) for word in targets])
 bias_ft = pd.DataFrame(bias_array,index=targets,columns=['female_effect_size','female_p_value'])
-bias_ft.to_csv(path.join("gender_association_collector_llm", f'cohere_10k.csv'))
+bias_ft.to_csv(path.join("llm_gender_association_collector", f'cohere_10k.csv'))
 
 print('Cohere 10k')
 
@@ -116,7 +116,7 @@ print('e5 VAD')
 targets = embedding_targets[0:STEP]
 bias_array = np.array([SC_WEAT(embedding_df.loc[word].to_numpy(),female_embeddings,male_embeddings,PERMUTATIONS) for word in targets])
 bias_df = pd.DataFrame(bias_array,index=targets,columns=['female_effect_size','female_p_value'])
-bias_df.to_csv(path.join("gender_association_collector_llm", f'e5_10k.csv'))
+bias_df.to_csv(path.join("llm_gender_association_collector", f'e5_10k.csv'))
 
 print('e5 10k')
 
@@ -145,7 +145,7 @@ print('openai VAD')
 targets = embedding_targets[0:STEP]
 bias_array = np.array([SC_WEAT(embedding_df.loc[word].to_numpy(),female_embeddings,male_embeddings,PERMUTATIONS) for word in targets])
 bias_df = pd.DataFrame(bias_array,index=targets,columns=['female_effect_size','female_p_value'])
-bias_df.to_csv(path.join("gender_association_collector_llm", f'openai_10k.csv'))
+bias_df.to_csv(path.join("llm_gender_association_collector", f'openai_10k.csv'))
 
 print('openai 10k')
 
