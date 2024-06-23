@@ -34,16 +34,16 @@ PERMUTATIONS = 10000
 GLOVE_DIR = f'glove.840B.300d'
 
 #Attribute Words
-female_stimuli = ['female','woman','girl','sister','she','her','daughter'] #'hers'
+female_stimuli = ['female','woman','girl','sister','she','her','daughter', 'hers']
 male_stimuli = ['male','man','boy','brother','he','him','his','son']
 
 #Skip first row when reading FT, not when reading GloVe
 
-embedding_df = pd.read_csv(path.join("llm_10000_embeddings", f'bge_10000_embeddings.csv'), sep=' ', nrows=10000, header=None,index_col=0, na_values=None, keep_default_na=False, quoting=csv.QUOTE_NONE)
+embedding_df = pd.read_csv(path.join("llm_10000_embeddings", f'bge_100000_embeddings.csv'), sep=' ', nrows=100000, header=None,index_col=0, na_values=None, keep_default_na=False, quoting=csv.QUOTE_NONE)
 print('BGE loaded')
 
 female_embeddings, male_embeddings = embedding_df.loc[female_stimuli].to_numpy(), embedding_df.loc[male_stimuli].to_numpy()
-embedding_targets = embedding_df.index.tolist()[:10000]
+embedding_targets = embedding_df.index.tolist()[:100000]
 
 #NRC-VAD Dataframe
 vad_df = pd.read_table(path.join("lexicons", f'NRC-VAD-Lexicon.txt'),sep='\t',index_col=0, na_values=None, keep_default_na=False)
@@ -59,21 +59,22 @@ bias_df = pd.DataFrame(bias_array,index=vad_words,columns=['female_effect_size',
 print('BGE VAD')
 
 #10k WEATS at a time - 100k most frequent words - GloVe embedding
-targets = embedding_targets[0:STEP]
-bias_array = np.array([SC_WEAT(embedding_df.loc[word].to_numpy(),female_embeddings,male_embeddings,PERMUTATIONS) for word in targets])
-bias_df = pd.DataFrame(bias_array,index=targets,columns=['female_effect_size','female_p_value'])
-bias_df.to_csv(path.join("llm_gender_association_collector", f'BGE_10k.csv'))
+for i in range(10):
+    targets = embedding_targets[i*STEP:(i+1)*STEP]
+    bias_array = np.array([SC_WEAT(embedding_df.loc[word].to_numpy(),female_embeddings,male_embeddings,PERMUTATIONS) for word in targets])  
+    bias_df = pd.DataFrame(bias_array,index=targets,columns=['female_effect_size','female_p_value'])
+    bias_df.to_csv(path.join("llm_gender_association_collector", "BGE", f'BGE_100k_{i}.csv'))
 
-print('BGE 10k')
+print('BGE 100k')
 
 ##########################
 
 #Read in FastText embedding
-embedding_ft = pd.read_csv(path.join("llm_10000_embeddings", f'cohere_large_10000_embeddings.csv'),sep=' ', nrows=10000, header=None,index_col=0, na_values=None, keep_default_na=False, quoting=csv.QUOTE_NONE)
+embedding_ft = pd.read_csv(path.join("llm_10000_embeddings", f'cohere_100000_embeddings.csv'),sep=' ', nrows=100000, header=None,index_col=0, na_values=None, keep_default_na=False, quoting=csv.QUOTE_NONE)
 print('Cohere loaded')
 
 female_embeddings, male_embeddings = embedding_ft.loc[female_stimuli].to_numpy(), embedding_ft.loc[male_stimuli].to_numpy()
-embedding_targets = embedding_ft.index.tolist()[:10000]
+embedding_targets = embedding_ft.index.tolist()[:100000]
 
 #Only VAD words in embedding
 vad_words = vad_df.index.tolist()
@@ -84,20 +85,21 @@ bias_ft = pd.DataFrame(bias_array,index=vad_words,columns=['female_effect_size',
 #bias_ft.to_csv(path.join("gender_association_collector", "vad", f'ft_vad_words.csv'))
 print('Cohere VAD')
 
-targets = embedding_targets[0:STEP]
-bias_array = np.array([SC_WEAT(embedding_ft.loc[word].to_numpy(),female_embeddings,male_embeddings,PERMUTATIONS) for word in targets])
-bias_ft = pd.DataFrame(bias_array,index=targets,columns=['female_effect_size','female_p_value'])
-bias_ft.to_csv(path.join("llm_gender_association_collector", f'cohere_10k.csv'))
+for i in range(10):
+    targets = embedding_targets[i*STEP:(i+1)*STEP]
+    bias_array = np.array([SC_WEAT(embedding_ft.loc[word].to_numpy(),female_embeddings,male_embeddings,PERMUTATIONS) for word in targets])  
+    bias_ft = pd.DataFrame(bias_array,index=targets,columns=['female_effect_size','female_p_value'])
+    bias_ft.to_csv(path.join("llm_gender_association_collector", "Cohere", f'cohere_100k_{i}.csv'))
 
-print('Cohere 10k')
+print('Cohere 100k')
 
 ##########################
 
-embedding_df = pd.read_csv(path.join("llm_10000_embeddings", f'e5_base_10000_embeddings.csv'), sep=' ', nrows=10000, header=None,index_col=0, na_values=None, keep_default_na=False, quoting=csv.QUOTE_NONE)
+embedding_df = pd.read_csv(path.join("llm_10000_embeddings", f'e5_100000_embeddings.csv'), sep=' ', nrows=100000, header=None,index_col=0, na_values=None, keep_default_na=False, quoting=csv.QUOTE_NONE)
 print('e5 loaded')
 
 female_embeddings, male_embeddings = embedding_df.loc[female_stimuli].to_numpy(), embedding_df.loc[male_stimuli].to_numpy()
-embedding_targets = embedding_df.index.tolist()[:10000]
+embedding_targets = embedding_df.index.tolist()[:100000]
 
 #NRC-VAD Dataframe
 vad_df = pd.read_table(path.join("lexicons", f'NRC-VAD-Lexicon.txt'),sep='\t',index_col=0, na_values=None, keep_default_na=False)
@@ -113,20 +115,21 @@ bias_df = pd.DataFrame(bias_array,index=vad_words,columns=['female_effect_size',
 print('e5 VAD')
 
 #10k WEATS at a time - 100k most frequent words - GloVe embedding
-targets = embedding_targets[0:STEP]
-bias_array = np.array([SC_WEAT(embedding_df.loc[word].to_numpy(),female_embeddings,male_embeddings,PERMUTATIONS) for word in targets])
-bias_df = pd.DataFrame(bias_array,index=targets,columns=['female_effect_size','female_p_value'])
-bias_df.to_csv(path.join("llm_gender_association_collector", f'e5_10k.csv'))
+for i in range(10):
+    targets = embedding_targets[i*STEP:(i+1)*STEP]
+    bias_array = np.array([SC_WEAT(embedding_df.loc[word].to_numpy(),female_embeddings,male_embeddings,PERMUTATIONS) for word in targets])
+    bias_df = pd.DataFrame(bias_array,index=targets,columns=['female_effect_size','female_p_value'])
+    bias_df.to_csv(path.join("llm_gender_association_collector", "E5", f'e5_100k_{i}.csv'))
 
-print('e5 10k')
+print('e5 100k')
 
 ##########################
 
-embedding_df = pd.read_csv(path.join("llm_10000_embeddings", f'openai_3_large_10000_embeddings.csv'), sep=' ', nrows=10000, header=None,index_col=0, na_values=None, keep_default_na=False, quoting=csv.QUOTE_NONE)
+embedding_df = pd.read_csv(path.join("llm_10000_embeddings", f'openai_100000_embeddings.csv'), sep=' ', nrows=100000, header=None,index_col=0, na_values=None, keep_default_na=False, quoting=csv.QUOTE_NONE)
 print('openai loaded')
 
 female_embeddings, male_embeddings = embedding_df.loc[female_stimuli].to_numpy(), embedding_df.loc[male_stimuli].to_numpy()
-embedding_targets = embedding_df.index.tolist()[:10000]
+embedding_targets = embedding_df.index.tolist()[:100000]
 
 #NRC-VAD Dataframe
 vad_df = pd.read_table(path.join("lexicons", f'NRC-VAD-Lexicon.txt'),sep='\t',index_col=0, na_values=None, keep_default_na=False)
@@ -142,11 +145,49 @@ bias_df = pd.DataFrame(bias_array,index=vad_words,columns=['female_effect_size',
 print('openai VAD')
 
 #10k WEATS at a time - 100k most frequent words - GloVe embedding
-targets = embedding_targets[0:STEP]
-bias_array = np.array([SC_WEAT(embedding_df.loc[word].to_numpy(),female_embeddings,male_embeddings,PERMUTATIONS) for word in targets])
-bias_df = pd.DataFrame(bias_array,index=targets,columns=['female_effect_size','female_p_value'])
-bias_df.to_csv(path.join("llm_gender_association_collector", f'openai_10k.csv'))
+for i in range(10):
+    targets = embedding_targets[i*STEP:(i+1)*STEP]
+    bias_array = np.array([SC_WEAT(embedding_df.loc[word].to_numpy(),female_embeddings,male_embeddings,PERMUTATIONS) for word in targets])
+    bias_df = pd.DataFrame(bias_array,index=targets,columns=['female_effect_size','female_p_value'])
+    bias_df.to_csv(path.join("llm_gender_association_collector", "OpenAI", f'openai_100k_{i}.csv'))
 
-print('openai 10k')
+print('openai 100k')
+
+#Concatenate and save 10k-word association dataframes
+#BGE
+concat_ = []
+for i in range(10):
+    df = pd.read_csv(path.join("llm_gender_association_collector", "BGE", f'BGE_100k_{i}.csv'),names=['word','female_effect_size','p_value'],skiprows=1,index_col='word', na_values=None, keep_default_na=False)
+    concat_.append(df)
+
+full_df = pd.concat(concat_,axis=0)
+full_df.to_csv(path.join("llm_gender_association_collector", f'BGE_100k.csv'))
+
+#Cohere
+concat_ = []
+for i in range(10):
+    df = pd.read_csv(path.join("llm_gender_association_collector", "Cohere", f'cohere_100k_{i}.csv'),names=['word','female_effect_size','p_value'],skiprows=1,index_col='word', na_values=None, keep_default_na=False)
+    concat_.append(df)
+
+full_df = pd.concat(concat_,axis=0)
+full_df.to_csv(path.join("llm_gender_association_collector", f'cohere_100k.csv'))
+
+#e5
+concat_ = []
+for i in range(10):
+    df = pd.read_csv(path.join("llm_gender_association_collector", "E5", f'e5_100k_{i}.csv'),names=['word','female_effect_size','p_value'],skiprows=1,index_col='word', na_values=None, keep_default_na=False)
+    concat_.append(df)
+
+full_df = pd.concat(concat_,axis=0)
+full_df.to_csv(path.join("llm_gender_association_collector", f'e5_100k.csv'))
+
+#openai
+concat_ = []
+for i in range(10):
+    df = pd.read_csv(path.join("llm_gender_association_collector", "OpenAI", f'openai_100k_{i}.csv'),names=['word','female_effect_size','p_value'],skiprows=1,index_col='word', na_values=None, keep_default_na=False)
+    concat_.append(df)
+
+full_df = pd.concat(concat_,axis=0)
+full_df.to_csv(path.join("llm_gender_association_collector", f'openai_100k.csv'))
 
 
