@@ -25,7 +25,7 @@ def calc_es_percentage(count_list, ceiling, df):
 def association_bar_chart_indiv(file, llm, axis="Gender", pos_class="Female", neg_class="Male", stimuli_pos=['female','woman','girl','sister','she','her','hers','daughter'], stimuli_neg=['male','man','boy','brother','he','him','his','son']):
     file_df = pd.read_csv(path.join("llm_gender_association_collector", file), na_values=None, keep_default_na=False)
 
-    frequency_ceilings = [100, 1000, 10000]
+    frequency_ceilings = [100, 1000, 10000, 100000]
 
     count_list = []
 
@@ -37,12 +37,12 @@ def association_bar_chart_indiv(file, llm, axis="Gender", pos_class="Female", ne
     data = {
         'N': ['10^2', '10^2',
             '10^3', '10^3',
-            '10^4', '10^4'],
-            #'10^5', '10^5', '10^5', '10^5', '10^5', '10^5', '10^5', '10^5'],
+            '10^4', '10^4',
+            '10^5', '10^5'],
         'Association': [f'{llm} {pos_class}', f'{llm} {neg_class}',
                         f'{llm} {pos_class}', f'{llm} {neg_class}',
+                        f'{llm} {pos_class}', f'{llm} {neg_class}',
                         f'{llm} {pos_class}', f'{llm} {neg_class}'],
-                        #f'BGE {pos_class}', f'BGE {neg_class}', f'Cohere {pos_class}', f'Cohere {neg_class}', f'BGE {pos_class}', f'BGE {neg_class}', f'Cohere {pos_class}', f'Cohere {neg_class}'],
         'Percentage': count_list
     }
 
@@ -66,25 +66,29 @@ def association_bar_chart_indiv(file, llm, axis="Gender", pos_class="Female", ne
     handles, labels = bar_plot.get_legend_handles_labels()
     bar_plot.legend(handles=handles, labels=labels, title='', bbox_to_anchor=(1.05, 1), loc='upper left')
 
+    # Add Percentage Labels
+    for container in bar_plot.containers:
+        bar_plot.bar_label(container)
+
     # Display the plot
     plt.tight_layout()
     plt.show()
 
 def all_association_bar_chart(axis="Gender", pos_class="Female", neg_class="Male", stimuli_pos=['female','woman','girl','sister','she','her','hers','daughter'], stimuli_neg=['male','man','boy','brother','he','him','his','son']):
-    bge_10k_df = pd.read_csv(path.join("llm_gender_association_collector", "BGE_10k.csv"), na_values=None, keep_default_na=False)
-    cohere_10k_df = pd.read_csv(path.join("llm_gender_association_collector", "cohere_10k.csv"), na_values=None, keep_default_na=False)
-    openai_10k_df = pd.read_csv(path.join("llm_gender_association_collector", "e5_10k.csv"), na_values=None, keep_default_na=False)
-    e5_10k_df = pd.read_csv(path.join("llm_gender_association_collector", "openai_10k.csv"), na_values=None, keep_default_na=False)
+    bge_100k_df = pd.read_csv(path.join("llm_gender_association_collector", "BGE_100k.csv"), na_values=None, keep_default_na=False)
+    cohere_100k_df = pd.read_csv(path.join("llm_gender_association_collector", "cohere_100k.csv"), na_values=None, keep_default_na=False)
+    openai_100k_df = pd.read_csv(path.join("llm_gender_association_collector", "e5_100k.csv"), na_values=None, keep_default_na=False)
+    e5_100k_df = pd.read_csv(path.join("llm_gender_association_collector", "openai_100k.csv"), na_values=None, keep_default_na=False)
 
-    frequency_ceilings = [100, 1000, 10000]
+    frequency_ceilings = [100, 1000, 10000, 100000]
 
     count_list = []
 
     for ceiling in frequency_ceilings:
-        head_bge_df = bge_10k_df.head(ceiling)
-        head_cohere_df = cohere_10k_df.head(ceiling)
-        head_openai_df = openai_10k_df.head(ceiling)
-        head_e5_df = e5_10k_df.head(ceiling)
+        head_bge_df = bge_100k_df.head(ceiling)
+        head_cohere_df = cohere_100k_df.head(ceiling)
+        head_openai_df = openai_100k_df.head(ceiling)
+        head_e5_df = e5_100k_df.head(ceiling)
 
         calc_es_percentage(count_list, ceiling, head_bge_df)
         calc_es_percentage(count_list, ceiling, head_cohere_df)
@@ -94,12 +98,12 @@ def all_association_bar_chart(axis="Gender", pos_class="Female", neg_class="Male
     data = {
         'N': ['10^2', '10^2', '10^2', '10^2', '10^2', '10^2', '10^2', '10^2',
             '10^3', '10^3', '10^3', '10^3', '10^3', '10^3', '10^3', '10^3',
-            '10^4', '10^4', '10^4', '10^4', '10^4', '10^4', '10^4', '10^4'],
-            #'10^5', '10^5', '10^5', '10^5', '10^5', '10^5', '10^5', '10^5'],
+            '10^4', '10^4', '10^4', '10^4', '10^4', '10^4', '10^4', '10^4',
+            '10^5', '10^5', '10^5', '10^5', '10^5', '10^5', '10^5', '10^5'],
         'Association': [f'BGE {pos_class}', f'BGE {neg_class}', f'Cohere {pos_class}', f'Cohere {neg_class}', f'OpenAI {pos_class}', f'OpenAI {neg_class}', f'e5 {pos_class}', f'e5 {neg_class}',
                         f'BGE {pos_class}', f'BGE {neg_class}', f'Cohere {pos_class}', f'Cohere {neg_class}', f'OpenAI {pos_class}', f'OpenAI {neg_class}', f'e5 {pos_class}', f'e5 {neg_class}',
-                        f'BGE {pos_class}', f'BGE {neg_class}', f'Cohere {pos_class}', f'Cohere {neg_class}', f'OpenAI {pos_class}', f'OpenAI {neg_class}', f'e5 {pos_class}', f'e5 {neg_class}'],
-                        #f'BGE {pos_class}', f'BGE {neg_class}', f'Cohere {pos_class}', f'Cohere {neg_class}', f'BGE {pos_class}', f'BGE {neg_class}', f'Cohere {pos_class}', f'Cohere {neg_class}'],
+                        f'BGE {pos_class}', f'BGE {neg_class}', f'Cohere {pos_class}', f'Cohere {neg_class}', f'OpenAI {pos_class}', f'OpenAI {neg_class}', f'e5 {pos_class}', f'e5 {neg_class}',
+                        f'BGE {pos_class}', f'BGE {neg_class}', f'Cohere {pos_class}', f'Cohere {neg_class}', f'BGE {pos_class}', f'BGE {neg_class}', f'Cohere {pos_class}', f'Cohere {neg_class}'],
         'Percentage': count_list
     }
 
@@ -123,13 +127,17 @@ def all_association_bar_chart(axis="Gender", pos_class="Female", neg_class="Male
     handles, labels = bar_plot.get_legend_handles_labels()
     bar_plot.legend(handles=handles, labels=labels, title='', bbox_to_anchor=(1.05, 1), loc='upper left')
 
+    # Adding percentage labels on each bar
+    for container in bar_plot.containers:
+        bar_plot.bar_label(container)
+
     # Display the plot
     plt.tight_layout()
     plt.show()
 
 #all_association_bar_chart()
 
-association_bar_chart_indiv("BGE_10k.csv", "BGE")
-association_bar_chart_indiv("cohere_10k.csv", "Cohere")
-association_bar_chart_indiv("e5_10k.csv", "e5")
-association_bar_chart_indiv("openai_10k.csv", "OpenAI")
+association_bar_chart_indiv("BGE_100k.csv", "BGE")
+association_bar_chart_indiv("cohere_100k.csv", "Cohere")
+association_bar_chart_indiv("e5_100k.csv", "e5")
+association_bar_chart_indiv("openai_100k.csv", "OpenAI")
