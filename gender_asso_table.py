@@ -14,32 +14,40 @@ num_rows = 100000
 
 file = "glove_100k.csv"
 
-es_df = pd.read_csv(path.join("top_100k_words", file), na_values=None, keep_default_na=False)
+source_df = pd.read_csv(path.join("top_100k_words", file), na_values=None, keep_default_na=False)
 
-n_list = [100, 1000, 10000, 100000]
-es_list = [0, 0.2, 0.5, 0.8]
+frequency_ceilings = [100, 1000, 10000, 100000]
+effect_size_floors = [0, 0.2, 0.5, 0.8]
 
 female_count = []
 male_count = []
 percent_female_count = []
 percent_male_count = []
 
-for number in n_list:
-    temp_es_df = es_df.head(number)
+for ceiling in frequency_ceilings:
+    head_df = source_df.head(ceiling)
 
     temp_female = []
     temp_male = []
 
     temp_percent_female = []
     temp_percent_male = []
-    for es in es_list:
-        temp_female.append(len(temp_es_df[temp_es_df["female_effect_size"] > es]))
-        temp_male.append(len(temp_es_df[temp_es_df["female_effect_size"] < es]))
+    for es in effect_size_floors:
+        temp_female_df = head_df.loc[head_df["female_effect_size"] >= es]
+        temp_quantity = len(temp_female_df.index.tolist())
+        temp_female.append(temp_quantity)
+
+        temp_male_df = head_df.loc[head_df["female_effect_size"] <= -es]
+        temp_quantity = len(temp_male_df.index.tolist())
+        temp_male.append(temp_quantity)
 
         temp_percent_female.append(round((temp_female[-1]/(temp_female[-1] + temp_male[-1])) * 100))
         temp_percent_male.append(round((temp_male[-1]/(temp_female[-1] + temp_male[-1])) * 100))
     female_count.append(temp_female)
     male_count.append(temp_male)
+
+    print(f"Female count for n={ceiling}, {female_count}")
+    print(f"Male count for n={ceiling}, {male_count}")
 
     percent_female_count.append(temp_percent_female)
     percent_male_count.append(temp_percent_male)
